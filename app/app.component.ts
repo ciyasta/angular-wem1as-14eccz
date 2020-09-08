@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { DataAddEvent } from '@progress/kendo-angular-sortable/dist/es2015/data-events';
 
 @Component({
     selector: 'my-app',
@@ -10,7 +11,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
         
 
             <kendo-sortable [kendoSortableBinding]="itemsSortable" zone="innerZone"
-                activeItemClass="sortable-item active" (dataAdd)="onDragStart(i, $event)" [animation]="true"
+                activeItemClass="sortable-item active" [animation]="true"
                 itemClass="sortable-item">
                 <ng-template let-item="item">
                     <span>
@@ -29,7 +30,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
                     <kendo-sortable emptyText="emptyItemStyle" [emptyItemStyle]="{'min-height': '100px','background-color': '#f7f7f7'}"
                         [kendoSortableBinding]="item.subFields" zone="innerZone" activeItemClass="sortable-item active"
-                        (dragStart)="onDragStart(i, $event)" [animation]="true" itemClass="sortable-item-sub"
+                        (dataAdd)="onDataAdd($event)" [animation]="true" itemClass="sortable-item-sub"
                         *ngIf="item.isGroup">
                         <ng-template let-item="item">
                             <span>
@@ -54,6 +55,11 @@ import { Component, ViewEncapsulation } from '@angular/core';
     encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
+  onDataAdd(e: DataAddEvent){
+    if(e.dataItem.isGroup){
+      e.prevented = true;
+    }
+  }
  public itemsSortable: any[] = [
     {
         "id": 85,
@@ -146,20 +152,6 @@ export class AppComponent {
         "isGroup": true
     }
 ];
-    
-    onDragStart(i, $event){
-         console.log(i);
-         console.log($event)
-      console.log($event.dataItem);
-      if($event.dataItem!= undefined && $event.dataItem.isGroup == true)
-      {
-        return false;
-      }
-      else{
-        return true;
-      }
-
-    }
     
 }
 
